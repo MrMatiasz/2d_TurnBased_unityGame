@@ -54,6 +54,8 @@ public class BattleSystem : MonoBehaviour
     }
     void EnemyTurn()
     {
+        int enemyChoose = Random.Range(1, 10);
+
         dialogText.text = "Enemy turn!";
 
         if (battleState != BattleState.ENEMYTURN)
@@ -63,7 +65,25 @@ public class BattleSystem : MonoBehaviour
 
         else
         {
-            StartCoroutine(EnemyAttack());
+            if(enemyUnit.currentHP == enemyUnit.maxHP)
+            {
+                StartCoroutine(EnemyAttack());
+            }
+            
+            else if(enemyUnit.currentHP != enemyUnit.maxHP && enemyChoose == 1)
+            {
+                StartCoroutine(EnemyHeal());
+            }
+
+            else if(enemyUnit.currentHP < 15 && enemyChoose < 4)
+            {
+                StartCoroutine(EnemyHeal());
+            }
+
+            else
+            {
+                StartCoroutine(EnemyAttack());
+            }
         }
     }
 
@@ -73,9 +93,9 @@ public class BattleSystem : MonoBehaviour
         bool isDead = enemyUnit.TakeDMG(playerUnit.damage);
 
         enemyHUD.SetHUD(enemyUnit);
-        dialogText.text = "attack is successful!";
+        dialogText.text = "attack is successful! ";
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         if (isDead)
         {
@@ -109,7 +129,7 @@ public class BattleSystem : MonoBehaviour
         playerHUD.SetHUD(playerUnit);
         dialogText.text = "Enemy attack is successful!";
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
 
         if (isDead)
         {
@@ -119,8 +139,21 @@ public class BattleSystem : MonoBehaviour
         else
         {
             battleState = BattleState.PLAYERTURN;
-            EnemyTurn();
+            PlayerTurn();
         }
+    }
+
+    IEnumerator EnemyHeal()
+    {
+        bool canTake = enemyUnit.TakeHeal();
+
+        enemyHUD.SetHUD(enemyUnit);
+        dialogText.text = "Enemy use healing!";
+
+        yield return new WaitForSeconds(2f);
+
+        battleState = BattleState.PLAYERTURN;
+        PlayerTurn();
     }
 
     void EndBattle()
