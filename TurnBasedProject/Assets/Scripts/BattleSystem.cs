@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST }
+public enum BattleState { START, PLAYERTURN, ENEMYTURN, WON, LOST, ESCAPE }
 
 public class BattleSystem : MonoBehaviour
 {
@@ -93,7 +93,15 @@ public class BattleSystem : MonoBehaviour
         bool isDead = enemyUnit.TakeDMG(playerUnit.damage);
 
         enemyHUD.SetHUD(enemyUnit);
-        dialogText.text = "attack is successful! ";
+
+        if (enemyUnit.isMissed)
+        {
+            dialogText.text = "Hit was missed!";
+        }
+        else
+        {
+            dialogText.text = "attack is successful!";
+        }
 
         yield return new WaitForSeconds(2f);
 
@@ -127,7 +135,14 @@ public class BattleSystem : MonoBehaviour
         bool isDead = playerUnit.TakeDMG(enemyUnit.damage);
 
         playerHUD.SetHUD(playerUnit);
-        dialogText.text = "Enemy attack is successful!";
+        if (playerUnit.isMissed)
+        {
+            dialogText.text = "Hit was missed!";
+        }
+        else
+        {
+            dialogText.text = "Enemy attack is successful! ";
+        }
 
         yield return new WaitForSeconds(2f);
 
@@ -167,6 +182,11 @@ public class BattleSystem : MonoBehaviour
         {
             dialogText.text = "Sadlly you lose this fight :(";
         }
+
+        else if(battleState == BattleState.ESCAPE)
+        {
+            dialogText.text = "Spierdalasz jak pizdeczka";
+        }
     }
 
     public void OnAttackButton()
@@ -193,5 +213,11 @@ public class BattleSystem : MonoBehaviour
         {
             StartCoroutine(PlayerHeal());
         }
+    }
+
+    public void OnEscapeButton()
+    {
+        battleState = BattleState.ESCAPE;
+        EndBattle();
     }
 }

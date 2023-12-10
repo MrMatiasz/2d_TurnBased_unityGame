@@ -48,8 +48,9 @@ MonoBehaviour:
   unitName: Enemy
   unitLvl: 10
   damage: 10
-  maxHP: 30
-  currentHP: 30
+  maxHP: 150
+  currentHP: 150
+  isMissed: 0
 --- !u!1 &3297152847265385347
 GameObject:
   m_ObjectHideFlags: 0

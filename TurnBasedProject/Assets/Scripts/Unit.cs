@@ -13,17 +13,26 @@ public class Unit : MonoBehaviour
     public int currentHP;
 
     double critValue = 0.10;
-    
-    bool isCrit;
+
+    public bool isMissed = false;
 
     public bool TakeDMG(int damage)
     {
+        isMissed = false;
         double crit = damage * critValue;
 
-        int random = Random.Range(1, 10);
-        if (random == 1)
+        int random = Random.Range(1, 101);
+        int miss = Random.Range(1, 101);
+
+        if (random <= 10)
         {
             currentHP -= damage + (int)crit;
+        }
+
+        else if(miss < 50)
+        {
+            isMissed = true;
+            currentHP -= 0;
         }
 
         else
@@ -35,6 +44,7 @@ public class Unit : MonoBehaviour
         {
             return true;
         }
+
         else
         {
             return false;
